@@ -24,7 +24,7 @@ VotePulse is a lightweight, fully responsive web-based digital voting applicatio
 
 ## 🚀 Live Demo & Deployment
 
-* **Live App:** [https://votepulse-system.vercel.app](https://votepulse-system.vercel.app) *(Replace with your live Vercel URL)*
+* **Live App:** [https://voting-machine-system.vercel.app/](https://voting-machine-system.vercel.app/) 
 * **Repository:** [https://github.com/webdevfurqan-svg/voting-machine-system](https://github.com/webdevfurqan-svg/voting-machine-system)
 
 ---
