@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Voting Machine</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            width: 100%;
+            max-width: 500px;
+            min-height: 500px;
+            height: auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .main-body {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            gap: 15px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            font-weight: 700;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input[type="text"]::placeholder {
+            color: #999;
+        }
+
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        button {
+            width: 100%;
+            border-radius: 10px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .vote-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .vote-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .vote-btn:active {
+            transform: translateY(0);
+        }
+
+        .result-btn {
+            background: #333;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+        }
+
+        .result-btn:hover {
+            background: #555;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .result-btn:active {
+            transform: translateY(0);
+        }
+
+        #New {
+            width: 100%;
+            border-radius: 10px;
+            padding: 12px;
+            border: 2px solid transparent;
+            text-align: center;
+            font-weight: 600;
+            font-size: 15px;
+            background: #f5f5f5;
+            margin-bottom: 10px;
+        }
+
+        #resultDisplay {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            text-align: center;
+            line-height: 2;
+            font-size: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        #resultDisplay strong {
+            color: #667eea;
+            font-size: 16px;
+        }
+
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px 20px;
+                border-radius: 15px;
+            }
+
+            h2 {
+                margin-bottom: 15px;
+            }
+
+            input[type="text"] {
+                padding: 10px 12px;
+                font-size: 15px;
+            }
+
+            button {
+                padding: 12px;
+                font-size: 15px;
+            }
+
+            #resultDisplay {
+                padding: 15px;
+                font-size: 14px;
+                line-height: 1.8;
+            }
+
+            #resultDisplay strong {
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 20px 15px;
+                border-radius: 12px;
+            }
+
+            h2 {
+                font-size: 1.4rem;
+            }
+
+            .main-body {
+                gap: 12px;
+            }
+
+            input[type="text"] {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            button {
+                padding: 11px;
+                font-size: 14px;
+            }
+
+            .btn-container {
+                gap: 10px;
+            }
+
+            #New {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            #resultDisplay {
+                padding: 12px;
+                font-size: 13px;
+                margin-top: 15px;
+            }
+
+            #resultDisplay strong {
+                font-size: 14px;
+            }
+        }
+
+        /* Landscape mobile */
+        @media (max-width: 768px) and (max-height: 500px) {
+            .container {
+                max-width: 600px;
+                padding: 20px;
+            }
+
+            .main-body {
+                gap: 10px;
+            }
+
+            button {
+                padding: 10px;
+            }
+
+            #resultDisplay {
+                padding: 12px;
+                margin-top: 10px;
+            }
+        }
+
+        /* Animation for party buttons */
+        .vote-btn:nth-child(1) {
+            animation: slideIn 0.4s ease 0.1s both;
+        }
+
+        .vote-btn:nth-child(2) {
+            animation: slideIn 0.4s ease 0.2s both;
+        }
+
+        .vote-btn:nth-child(3) {
+            animation: slideIn 0.4s ease 0.3s both;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="main-body">
+            <h2>🗳️ Online Voting Machine</h2>
+            <input type="text" placeholder="Enter your CNIC" id="cnic" required />
+            <input type="number" oninput="MyAge()" placeholder="Enter your Age" id="Age" required />
+
+            <div class="btn-container">
+                <button class="vote-btn" onclick="voteParty('A')">🔵 Vote Party A</button>
+                <button class="vote-btn" onclick="voteParty('B')">🟢 Vote Party B</button>
+                <button class="vote-btn" onclick="voteParty('C')">🔴 Vote Party C</button>
+            </div>
+
+            <input type="text" id="New" readonly />
+            <button class="result-btn" onclick="showResults()">📊 Show Final Result</button>
+            <div id="resultDisplay"></div>
+        </div>
+    </div>
+
+    <script>
+        let hasVoted = false;
+        let votes = { partyA: 0, partyB: 0, partyC: 0 };
+        let totalVoters = 5;
+        let votedCNICs = new Set(); // Track CNICs that have voted
+
+        function MyAge() {
+            let age = document.getElementById("Age").value;
+
+            if (age >= 18) {
+                document.getElementById("New").value = "✅ Eligible to vote";
+                document.getElementById("New").style.color = "green";
+                document.getElementById("New").style.background = "#e8f5e9";
+            }
+            else if (age > 0) {
+                document.getElementById("New").value = "❌ Not Eligible (18+ only)";
+                document.getElementById("New").style.color = "red";
+                document.getElementById("New").style.background = "#ffebee";
+            }
+            else {
+                document.getElementById("New").value = "";
+                document.getElementById("New").style.background = "#f5f5f5";
+            }
+        }
+
+        function voteParty(party) {
+            let age = document.getElementById("Age").value;
+            let cnic = document.getElementById("cnic").value.trim();
+
+
+            if (cnic === "") {
+                document.getElementById("New").value = "⚠️ Please enter your CNIC";
+                document.getElementById("New").style.color = "#ff9800";
+                document.getElementById("New").style.background = "#fff3e0";
+                return;
+            }
+
+
+            if (age < 18 || age === "") {
+                document.getElementById("New").value = "❌ Not Eligible (18+ only)";
+                document.getElementById("New").style.color = "red";
+                document.getElementById("New").style.background = "#ffebee";
+                return;
+            }
+
+
+            if (votedCNICs.has(cnic)) {
+                document.getElementById("New").value = "🚫 This CNIC has already voted!";
+                document.getElementById("New").style.color = "red";
+                document.getElementById("New").style.background = "#ffebee";
+                return;
+            }
+
+
+            if (hasVoted) {
+                document.getElementById("New").value = "🚫 Double vote not allowed!";
+                document.getElementById("New").style.color = "red";
+                document.getElementById("New").style.background = "#ffebee";
+                return;
+            }
+
+
+            hasVoted = true;
+            votedCNICs.add(cnic);
+
+            if (party === 'A') {
+                votes.partyA++;
+            } else if (party === 'B') {
+                votes.partyB++;
+            } else if (party === 'C') {
+                votes.partyC++;
+            }
+
+
+            document.getElementById("New").value = `✅ Vote casted for Party ${party}!`;
+            document.getElementById("New").style.color = "green";
+            document.getElementById("New").style.background = "#e8f5e9";
+
+
+            document.getElementById("cnic").value = "";
+            document.getElementById("Age").value = "";
+
+
+            setTimeout(() => {
+                hasVoted = false;
+                document.getElementById("New").value = "";
+                document.getElementById("New").style.background = "#f5f5f5";
+            }, 2000);
+        }
+
+        function showResults() {
+            let votesDone = votes.partyA + votes.partyB + votes.partyC;
+            let remainingVoters = totalVoters - votesDone;
+
+
+            let maxVotes = Math.max(votes.partyA, votes.partyB, votes.partyC);
+            let winningParty = "";
+
+            if (maxVotes === 0) {
+                winningParty = "No votes yet";
+            } else if (votes.partyA === maxVotes && votes.partyB === maxVotes && votes.partyC === maxVotes) {
+                winningParty = "Three-way tie!";
+            } else if (votes.partyA === maxVotes && votes.partyB === maxVotes) {
+                winningParty = "Tie: Party A & B";
+            } else if (votes.partyB === maxVotes && votes.partyC === maxVotes) {
+                winningParty = "Tie: Party B & C";
+            } else if (votes.partyA === maxVotes && votes.partyC === maxVotes) {
+                winningParty = "Tie: Party A & C";
+            } else if (votes.partyA === maxVotes) {
+                winningParty = "🔵 Party A";
+            } else if (votes.partyB === maxVotes) {
+                winningParty = "🟢 Party B";
+            } else {
+                winningParty = "🔴 Party C";
+            }
+
+
+            let percentA = votesDone > 0 ? ((votes.partyA / votesDone) * 100).toFixed(1) : 0;
+            let percentB = votesDone > 0 ? ((votes.partyB / votesDone) * 100).toFixed(1) : 0;
+            let percentC = votesDone > 0 ? ((votes.partyC / votesDone) * 100).toFixed(1) : 0;
+
+
+            let resultHTML = `
+                <div style="margin-bottom: 15px;">
+                    🔵 Party A: ${votes.partyA} votes (${percentA}%)<br>
+                    🟢 Party B: ${votes.partyB} votes (${percentB}%)<br>
+                    🔴 Party C: ${votes.partyC} votes (${percentC}%)<br>
+                </div>
+                <div style="border-top: 2px solid #667eea; padding-top: 15px;">
+                    <strong>Total Voters:</strong> ${totalVoters}<br>
+                    <strong>Votes Cast:</strong> ${votesDone}<br>
+                    <strong>Remaining:</strong> ${remainingVoters}<br>
+                    <strong style="font-size: 18px; margin-top: 10px; display: block;">🏆 Winner: ${winningParty}</strong>
+                </div>
+            `;
+
+            document.getElementById("resultDisplay").innerHTML = resultHTML;
+        }
+    </script>
+</body>
+
+</html>
